@@ -25,12 +25,12 @@ import logging
 import math
 import re
 
-# model
-import model.coords.coord_model as model
-import model.coords.coord_conv as conv
-import model.coords.coord_defs as cdefs
-import model.coords.coord_geod as geod
-import model.coords.coord_geog as geog
+# libs
+import libs.coords.coord_model as model
+import libs.coords.coord_conv as conv
+import libs.coords.coord_defs as cdefs
+import libs.coords.coord_geod as geod
+import libs.coords.coord_geog as geog
 
 # < module data >----------------------------------------------------------------------------------
 
