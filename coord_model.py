@@ -22,10 +22,10 @@ __date__ = "2015/11"
 # python library
 # import logging
 
-# model
-import model.coords.coord_defs as cdefs
-import model.coords.coord_conv as conv
-import model.coords.coord_geod as geod
+# libs
+import libs.coords.coord_defs as cdefs
+import libs.coords.coord_conv as conv
+import libs.coords.coord_geod as geod
 
 # < module data >----------------------------------------------------------------------------------
 
