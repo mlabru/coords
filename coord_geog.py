@@ -83,13 +83,17 @@ def __calc_gama(ff_lat_pto, ff_lng_pto, ff_lat_ref=cdefs.M_REF_LAT, ff_lng_ref=c
     return (lf_ir * lf_ip) + (lf_jr * lf_jp) + (lf_kr * lf_kp)
 
 # -------------------------------------------------------------------------------------------------
-def decl_xyz(ff_x, ff_y, ff_z, ff_decl_mag):
+def decl_xyz_0(ff_x, ff_y, ff_z, ff_decl_mag):
     """
     @param ff_x: DOCUMENT ME!
     @param ff_y: DOCUMENT ME!
     @param ff_z: DOCUMENT ME!
     @param ff_decl_mag: DOCUMENT ME!
     """
+    #l_log = logging.getLogger("CCoordSys::decl_xyz")
+    #l_log.setLevel(logging.DEBUG)
+    #l_log.debug("x, y, z / decl (A): {} {} {} {}".format(ff_x, ff_y, ff_z, ff_decl_mag))
+                                    
     # quadrante
     li_quad = 0
 
@@ -102,47 +106,49 @@ def decl_xyz(ff_x, ff_y, ff_z, ff_decl_mag):
 
     # condições marginais
     if (ff_x != 0.) or (ff_y != 0.):
+        # x = 0. ?
         if 0. == ff_x:
             if ff_y > 0.:
                 # determinação da distancia & ângulo trigonométrico
                 lf_dst = ff_y
-                lf_ang = cdefs.D_RADPI_2
+                lf_ang = cdefs.D_RAD_PI_2
 
             else:
                 # determinação da distancia & ângulo trigonométrico
                 lf_dst = abs(ff_y)
-                lf_ang = cdefs.D_RAD3PI_2
+                lf_ang = cdefs.D_RAD_3PI_2
 
-        else:
-            if ff_y == 0.:
-                if ff_x > 0.:
-                    # determinação da distancia & ângulo trigonométrico
-                    lf_dst = ff_x
-                    lf_ang = 0.
-
-                else:
-                    # determinação da distancia & ângulo trigonométrico
-                    lf_dst = abs(ff_x)
-                    lf_ang = math.pi
+        # y = 0. ?
+        elif ff_y == 0.:
+            if ff_x > 0.:
+                # determinação da distancia & ângulo trigonométrico
+                lf_dst = ff_x
+                lf_ang = 0.
 
             else:
-                # determinação do quadrante
-                if ff_x > 0.:
-                    if ff_y > 0.:
-                        li_quad = 1
+                # determinação da distancia & ângulo trigonométrico
+                lf_dst = abs(ff_x)
+                lf_ang = math.pi
 
-                    else:
-                        li_quad = 4
-
-                elif ff_y > 0.:
-                    li_quad = 2
+        # senão,...
+        else:
+            # determinação do quadrante
+            if ff_x > 0.:
+                if ff_y > 0.:
+                    li_quad = 1
 
                 else:
-                    li_quad = 3
+                    li_quad = 4
 
-                # determinação da distancia & ângulo trigonométrico
-                lf_dst = math.sqrt(pow(ff_x, 2) + pow(ff_y, 2))
-                lf_ang = math.atan(fabs(ff_y) / fabs(ff_x))
+            elif ff_y > 0.:
+                li_quad = 2
+
+            else:
+                li_quad = 3
+
+            # determinação da distancia & ângulo trigonométrico
+            lf_dst = math.sqrt((ff_x ** 2) + (ff_y ** 2))
+            lf_ang = math.atan(abs(ff_y) / abs(ff_x))
 
         # correção do ângulo trigonométrico devido ao quadrante
         if 2 == li_quad:
@@ -152,81 +158,74 @@ def decl_xyz(ff_x, ff_y, ff_z, ff_decl_mag):
             lf_ang += math.pi
 
         elif 4 == li_quad:
-            lf_ang = cdefs.D_RAD2PI - lf_ang
+            lf_ang = cdefs.D_RAD_2PI - lf_ang
 
         # converte o ângulo trigonométrico em radial
-        if lf_ang <= cdefs.D_RADPI_2:
-            lf_ang = cdefs.D_RADPI_2 - lf_ang
+        if lf_ang <= cdefs.D_RAD_PI_2:
+            lf_ang = cdefs.D_RAD_PI_2 - lf_ang
 
         else:
-            lf_ang =(cdefs.D_RADPI_2 * 5) - lf_ang
+            lf_ang =(cdefs.D_RAD_PI_2 * 5) - lf_ang
 
-        # obtem a declinação magnetica
-        # memcpy(l_szBuf, ff_decl_mag, 2)
-        # l_szBuf[2] = '\0'
-
-        # converte para radianos
-        lf_dec_mag = math.radians(atof(l_szBuf))
+        # converte a declinação magnética para radianos
+        lf_dec_mag = math.radians(ff_decl_mag)
 
         # corrige a radial devido a declinação magnética
-        if ((ff_decl_mag [2] == 'W') or (ff_decl_mag [2] == 'w')):
+        if ff_decl_mag < 0.:
             lf_ang += lf_dec_mag
 
-        elif ((ff_decl_mag [2] == 'E') or (ff_decl_mag [2] == 'e')):
+        elif ff_decl_mag > 0.:
             lf_ang -= lf_dec_mag
 
         # converte a radial em ângulo trigonométrico
-        if lf_ang <= cdefs.D_RADPI_2:
-            lf_ang = cdefs.D_RADPI_2 - lf_ang
+        if lf_ang <= cdefs.D_RAD_PI_2:
+            lf_ang = cdefs.D_RAD_PI_2 - lf_ang
 
         else:
-            lf_ang =(cdefs.D_RADPI_2 * 5) - lf_ang
+            lf_ang =(cdefs.D_RAD_PI_2 * 5) - lf_ang
 
         # calcula as novas coordenadas X e Y
         ff_x = lf_dst * math.cos(lf_ang)
         ff_y = lf_dst * math.sin(lf_ang)
 
+    #l_log.debug("x, y, z (D): {} {} {}".format(ff_x, ff_y, ff_z))
+
     # return
-    return ff_x, ff_y, 0.
+    return ff_x, ff_y, ff_z
 
 # -------------------------------------------------------------------------------------------------
-def decl_xyz_2(f_oXY, f_oRef):
+def decl_xyz(ff_x, ff_y, ff_z, ff_dcl_mag=cdefs.M_DCL_MAG):
     """
     negativo (O/W), gira no sentido horário
 
-    @param f_oXY: DOCUMENT ME!
-    @param f_oRef: DOCUMENT ME!
+    @param ff_x: DOCUMENT ME!
+    @param ff_y: DOCUMENT ME!
+    @param ff_z: DOCUMENT ME!
+    @param ff_decl_mag: DOCUMENT ME!
 
-    @return xsXY
+    @return ponto declinado
     """
-    # check input
-    assert f_oXY
-    assert f_oRef
+    # declinação em radianos
+    lf_dcl_r = math.radians(abs(ff_dcl_mag))
 
-    # salva nas áreas de trabalho
-    l_fX = f_oXY._fX
-    l_fY = f_oXY._fY
+    # sin e cos da declinação
+    lf_dcl_sin = math.sin(lf_dcl_r)
+    lf_dcl_cos = math.cos(lf_dcl_r)
 
     # declinação a leste ?
-    if ('E' == f_oRef._cHem) or ('e' == f_oRef._cHem):
-        # ajuste da coordenada com a declinação magnética da área
-        f_oXY._fX = +(l_fX * math.cos(math.radians(math.fabs(f_oRef._fDcl)))) - \
-                     (l_fY * math.sin(math.radians(math.fabs(f_oRef._fDcl))))
-
-        f_oXY._fY = +(l_fX * math.sin(math.radians(math.fabs(f_oRef._fDcl)))) + \
-                     (l_fY * math.cos(math.radians(math.fabs(f_oRef._fDcl))))
+    if ff_dcl_mag < 0.:
+        # ajuste da coordenada com a declinação magnética
+        ff_x = (ff_x * lf_dcl_cos) - (ff_y * lf_dcl_sin)
+        ff_y = (ff_y * lf_dcl_cos) + (ff_x * lf_dcl_sin)
 
     # senão, declinação a oeste
     else:
-        # ajuste da coordenada com a declinação magnética da área
-        f_oXY._fX = +(l_fX * math.cos(math.radians(math.fabs(f_oRef._fDcl)))) + \
-                     (l_fY * math.sin(math.radians(math.fabs(f_oRef._fDcl))))
-
-        f_oXY._fY = -(l_fX * math.sin(math.radians(math.fabs(f_oRef._fDcl)))) + \
-                     (l_fY * math.cos(math.radians(math.fabs(f_oRef._fDcl))))
+        # ajuste da coordenada com a declinação magnética
+        ff_x = (ff_x * lf_dcl_cos) + (ff_y * lf_dcl_sin)
+        ff_y = (ff_y * lf_dcl_cos) - (ff_x * lf_dcl_sin)
 
     # return
-    return f_oXY
+    return ff_x, ff_y, ff_z
 
 # -------------------------------------------------------------------------------------------------
 def geo_azim(ff_lat_pto, ff_lng_pto, ff_lat_ref=cdefs.M_REF_LAT, ff_lng_ref=cdefs.M_REF_LNG):
