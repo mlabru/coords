@@ -213,7 +213,7 @@ def decl_xyz(ff_x, ff_y, ff_z, ff_dcl_mag=cdefs.M_DCL_MAG):
     lf_dcl_cos = math.cos(lf_dcl_r)
 
     # declinação a leste ?
-    if ff_dcl_mag < 0.:
+    if ff_dcl_mag > 0.:
         # ajuste da coordenada com a declinação magnética
         ff_x = (ff_x * lf_dcl_cos) - (ff_y * lf_dcl_sin)
         ff_y = (ff_y * lf_dcl_cos) + (ff_x * lf_dcl_sin)
