@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 ---------------------------------------------------------------------------------------------------
-coord_conv.
+coord_conv
 
 manage geographical points, perform conversions, etc
 
@@ -274,6 +274,55 @@ def lng2dms(ff_lng):
 
     # retorna a tupla
     return deg2dms(abs(ff_lng)), 'W' if ff_lng < 0 else 'E'
+
+# -------------------------------------------------------------------------------------------------
+def parse_aisweb(fs_in):
+    """
+    conversão de uma latitude/longitude(no formato X:GGG:MM:SS.ss) para coordenada geográfica
+
+    @param fs_in: string no formato X:GGG:MM:SS.ss
+
+    @return objeto latitude/longitude
+    """
+    # coordinates field decoding
+    l_coord = fs_in.split(':')
+
+    # hemisfério sul/oeste ?
+    if l_coord[0].upper() in ['O', 'S', 'W']:
+        li_sgn = -1
+
+    # hemisfério norte/leste ?
+    elif l_coord[0].upper() in ['E', 'N']:        
+        li_sgn = 1
+
+    # otherwise,...
+    else:
+        # return error
+        return -1.
+
+    # init coord
+    lf_crd = -1.
+
+    # converte graus
+    li_deg = int(l_coord[1])
+
+    # graus válidos ?
+    if -180 <= li_deg <= 180:
+        # converte minutos
+        li_min = int(l_coord[2])
+
+        # minutos válidos ?
+        if 0 <= li_min <= 59:
+            # converte segundos
+            lf_sec = float(l_coord[3])
+
+            # segundos válidos ?
+            if lf_sec >= 0.:
+                # cria uma coordenada
+                lf_crd = dms2deg(li_deg, li_min, lf_sec) * li_sgn
+
+    # return longitude or latitude
+    return lf_crd
 
 # -------------------------------------------------------------------------------------------------
 def parse_faa(fs_in):

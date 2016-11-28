@@ -286,6 +286,17 @@ class CCoordSys(model.CCoordModel):
             # cai fora
             return li_rc, lf_lat, lf_lng
 
+        # coordenada geográfica formato AISWEB ?(formato X:999:99:99.99)
+        elif 'K' == fc_tipo:
+            # latitude
+            lf_lat = conv.parse_aisweb(str(fs_cpo_a))
+
+            # longitude
+            lf_lng = conv.parse_aisweb(str(fs_cpo_b))
+
+            # ok
+            return 0, lf_lat, lf_lng
+
         # coordenada geográfica formato decimal ?(formato +/-999.9999)
         elif 'L' == fc_tipo:
             # latitude
