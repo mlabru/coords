@@ -579,17 +579,17 @@ def geo2xy_2(ff_lat_pto, ff_lng_pto, ff_lat_ref=cdefs.M_REF_LAT, ff_lng_ref=cdef
 # -------------------------------------------------------------------------------------------------
 def geo2xyz_3(ff_lat_pto, ff_lng_pto, ff_alt=0.):
     """
-    geodetic coordinates(latitude, longitude, height) can be converted into XY.
+    geodetic coordinates(latitude, longitude, height) can be converted into XY
     """
     # check input
     assert  -90. <= ff_lat_pto <= 90.
     assert -180. <= ff_lng_pto <= 180.
 
     # calcula x
-    lf_x = (ff_lng_pto - cdefs.M_REF_LNG) * cdefs.D_CNV_GR2M
+    lf_x = (ff_lng_pto - float(cdefs.M_REF_LNG)) * cdefs.D_CNV_GR2M
 
     # calcula y
-    lf_y = (ff_lat_pto - cdefs.M_REF_LAT) * cdefs.D_CNV_GR2M
+    lf_y = (ff_lat_pto - float(cdefs.M_REF_LAT)) * cdefs.D_CNV_GR2M
 
     # elevação
     lf_z = ff_alt

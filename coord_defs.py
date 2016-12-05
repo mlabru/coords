@@ -245,12 +245,12 @@ D_SET_COORD_VALIDAS = ('D', 'F', 'G', 'I', 'K', 'L', 'P', 'X')
 # < module data >----------------------------------------------------------------------------------
 
 # latitude de referência (SBBR)
-M_REF_LAT = float(-15.778460)
+M_REF_LAT = -15.778460
 
 # longitude de referência (SBBR)
-M_REF_LNG = float(-47.928661)
+M_REF_LNG = -47.928661
 
 # declinação magnética (SBBR)
-M_DCL_MAG = float(-21.37)
+M_DCL_MAG = -21.37
 
 # < the end >--------------------------------------------------------------------------------------
