@@ -634,10 +634,10 @@ def xyz2geo_3(ff_x, ff_y, ff_z=0.):
     @param ff_z: coordenada z do ponto
     """
     # calcula latitude
-    lf_lat = cdefs.M_REF_LAT + (ff_y / cdefs.D_CNV_GR2M)
+    lf_lat = float(cdefs.M_REF_LAT) + (ff_y / cdefs.D_CNV_GR2M)
 
     # calcula longitude
-    lf_lng = cdefs.M_REF_LNG + (ff_x / cdefs.D_CNV_GR2M)
+    lf_lng = float(cdefs.M_REF_LNG) + (ff_x / cdefs.D_CNV_GR2M)
 
     # calcula altitude
     lf_alt = ff_z
